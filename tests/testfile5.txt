@@ -1,0 +1,67 @@
+//#include <cstdio>
+
+/*
+ * Decl         y
+ * FuncDef      y
+ */
+
+int var1 = 1;
+const int var2 = 2;
+
+int func1(){
+    printf("11111");
+    return 1;
+}
+
+void func2(int param1, int param2){
+    printf("%d %d\n", param1, param2);
+    return;
+}
+
+int main(){
+    printf("20375330\n");
+
+    printf("%d\n", var1);
+    printf("%d\n", var2);
+    int a = 0;
+    a = func1();
+    printf("%d\n", a);
+    int var3 = 3, var4 =4, var5 = 5, var6 = 6;
+    const int var7 = 5, var8 = 6, var9 = 9, var10 = 10;
+    printf("%d %d %d %d %d %d %d %d\n", var3, var4, var5, var6, var7, var8, var9, var10);
+    func2(var3, var7);
+
+    const int num1 = 999;
+    const int num2 = 999 + 999;
+    printf("%d %d\n", num1, num2);
+
+    int v1 = 888;
+    int v2 = 888 + 888;
+    printf("%d %d\n", v1, v2);
+
+    {
+        int count = 0;
+        count = count + 1;
+        {
+            printf("in block block\n");
+        }
+
+        {
+
+        }
+
+        if (count == 1){
+            count = count -1;
+        } else {
+            count = count + 1;
+        }
+
+        if (count == 0){
+            count = count * 2;
+        }
+
+        printf("%d", count);
+    }
+
+    return 0;
+}

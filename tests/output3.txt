@@ -1,0 +1,10 @@
+20375330
+1 1 2 2 3 3
+yes
+yes
+yes
+in func
+-1 1 1
+0
+1
+in blank for

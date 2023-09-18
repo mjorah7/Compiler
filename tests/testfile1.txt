@@ -1,0 +1,32 @@
+/*
+ * Decl         n
+ * FuncDef      n
+ */
+
+int main(){
+    printf("20375330\n");
+
+    int a1 = 1, a2 = 1, a3 = 2, a4 = 2, a5 = 3, a6 = 2;
+    printf("%d %d %d %d %d %d\n", a1, a2, a3, a4, a5, a6);
+
+    if(a1 >= 1 && a2 >= 1){
+        printf("yyy\n");
+    }
+    if(a1 >= 1 || a2 >= 1){
+        printf("yyy\n");
+    }
+    if(a1 > 1 && a2 >= 1){
+        printf("yyy\n");
+    }
+    if(a1 > 1 || a2 >= 1){
+        printf("yyy\n");
+    }
+
+    printf("end\n");
+    printf("end\n");
+    printf("end\n");
+    printf("end\n");
+    printf("end");
+
+    return 0;
+}
