@@ -15,7 +15,7 @@ public class Lexer {
         this.line = 1;
     }
 
-    public List<Token> parseSourceCode(String sourceCode) {
+    public List<Token> getTokenList(String sourceCode) {
         String source = removeComment(sourceCode);
         List<Token> tokens = new ArrayList<>();
         Token token = nextToken(source);
@@ -225,26 +225,6 @@ public class Lexer {
         }
 
         return new Token(this.line, type, curString.toString());
-    }
-
-    public static void main(String[] args) {
-        Lexer lexer = new Lexer();
-        String source = """
-                const int array[2] = {1,2};
-
-                //aiusgdfaiusgciuagsciuagisu
-                int main(){
-                    int c;
-                /* aiusbv//ciabsic
-
-
-                akjhsbvdka*/
-                    c = getint();
-                    printf("/*output is %d*/",c);
-                    return c;
-                }""";
-        String output = lexer.removeComment(source);
-        System.out.println(output);
     }
 
     private boolean isBlankChar(char c) {

@@ -1,0 +1,30 @@
+INTTK int
+MAINTK main
+LPARENT (
+RPARENT )
+LBRACE {
+PLUS +
+<UnaryOp>
+MINU -
+<UnaryOp>
+PLUS +
+<UnaryOp>
+MINU -
+<UnaryOp>
+INTCON 1
+<Number>
+<PrimaryExp>
+<UnaryExp>
+<UnaryExp>
+<UnaryExp>
+<UnaryExp>
+<UnaryExp>
+<MulExp>
+<AddExp>
+<Exp>
+SEMICN ;
+<Stmt>
+RBRACE }
+<Block>
+<MainFuncDef>
+<CompUnit>
