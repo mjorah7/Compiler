@@ -9,6 +9,8 @@ public class Node {
     public NodeType type;
     public List<Node> nodeList;
 
+    public int nodeLine;
+
     public enum NodeType {
         CompUnit, Decl, ConstDecl, BType, ConstDef, ConstInitVal, VarDecl, VarDef, InitVal, FuncDef,
         MainFuncDef, FuncType, FuncFParams, FuncFParam, Block, BlockItem, Stmt, ForStmt, Exp, Cond, LVal, PrimaryExp, Number, UnaryExp, UnaryOp, FuncRParams, MulExp,
@@ -19,7 +21,8 @@ public class Node {
         ASSIGN, SEMICN, COMMA, LPARENT, RPARENT, LBRACK, RBRACK, LBRACE, RBRACE
     }
 
-    public Node (String name, List<Node> nodeList, NodeType type) {
+    public Node (int line, String name, List<Node> nodeList, NodeType type) {
+        this.nodeLine  = line;
         this.name = name;
         this.nodeList = nodeList;
         this.type = type;

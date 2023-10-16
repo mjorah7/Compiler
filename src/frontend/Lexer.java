@@ -70,7 +70,7 @@ public class Lexer {
         Token.TokenType type = null;
 
         while (this.position < source.length() && isBlankChar(source.charAt(this.position))) {
-            if (source.charAt(this.position) == '\n' || source.charAt(this.position) == '\r') {
+            if (source.charAt(this.position) == '\n') {
                 this.line ++;
             }
             this.position ++;
@@ -157,24 +157,16 @@ public class Lexer {
                     type = TokenType.RBRACE;
                 }
                 case '&' -> {
-                    if (source.charAt(this.position + 1) != '&') {
-                        // TODO error
-                    } else {
-                        curString.append(source.charAt(this.position));
-                        this.position++;
-                        curString.append(source.charAt(this.position));
-                        type = TokenType.AND;
-                    }
+                    curString.append(source.charAt(this.position));
+                    this.position++;
+                    curString.append(source.charAt(this.position));
+                    type = TokenType.AND;
                 }
                 case '|' -> {
-                    if (source.charAt(this.position + 1) != '|') {
-                        // TODO error
-                    } else {
-                        curString.append(source.charAt(this.position));
-                        this.position++;
-                        curString.append(source.charAt(this.position));
-                        type = TokenType.OR;
-                    }
+                    curString.append(source.charAt(this.position));
+                    this.position++;
+                    curString.append(source.charAt(this.position));
+                    type = TokenType.OR;
                 }
                 case '<' -> {
                     if (source.charAt(this.position + 1) == '=') {
