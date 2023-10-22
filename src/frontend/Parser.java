@@ -321,11 +321,19 @@ public class Parser {
                 | 'return' [Exp] ';'
                 | LVal '=' 'getint''('')'';'
                 | 'printf''('FormatString{','Exp}')'';'
+                | 'repeat' Stmt 'until' '(' Cond ')'
          */
         int line = tokens.getCurToken().getTokenLine();
         List<Node> nodes = new ArrayList<>();
         if (tokens.getCurToken().getTokenType() == Token.TokenType.SEMICN) {
             nodes.add(addLeaf(Token.TokenType.SEMICN));
+        } else if (tokens.getCurToken().getTokenType() == Token.TokenType.REPEATTK) {
+            nodes.add(addLeaf(Token.TokenType.REPEATTK));
+            nodes.add(this.parseStmt());
+            nodes.add(addLeaf(Token.TokenType.UNTILTK));
+            nodes.add(addLeaf(Token.TokenType.LPARENT));
+            nodes.add(this.parseCond());
+            nodes.add(addLeaf(Token.TokenType.RPARENT));
         } else if (tokens.getCurToken().getTokenType() == Token.TokenType.IFTK) {
             nodes.add(addLeaf(Token.TokenType.IFTK));
             nodes.add(addLeaf(Token.TokenType.LPARENT));
@@ -451,7 +459,7 @@ public class Parser {
             nodes.add(addLeaf(Token.TokenType.LPARENT));
             nodes.add(this.parseExp());
             nodes.add(addLeaf(Token.TokenType.RPARENT));
-        } else if (tokens.getCurToken().getTokenType() == Token.TokenType.INTCON) {
+        } else if (tokens.getCurToken().getTokenType() == Token.TokenType.INTCON || tokens.getCurToken().getTokenType() == Token.TokenType.HEXCON) {
             nodes.add(this.parseNumber());
         } else {
             nodes.add(this.parseLVal());
@@ -460,10 +468,14 @@ public class Parser {
     }
 
     public Node parseNumber () {
-        // Number → IntConst
+        // Number → IntConst | HexadecimalConst
         int line = tokens.getCurToken().getTokenLine();
         List<Node> nodes = new ArrayList<>();
-        nodes.add(addLeaf(Token.TokenType.INTCON));
+        if (tokens.getCurToken().getTokenContent().length() >= 3 && tokens.getCurToken().getTokenContent().charAt(0) == '0' && (tokens.getCurToken().getTokenContent().charAt(1) == 'x' || tokens.getCurToken().getTokenContent().charAt(1) == 'X')) {
+            nodes.add(addLeaf(Token.TokenType.HEXCON));
+        } else {
+            nodes.add(addLeaf(Token.TokenType.INTCON));
+        }
         return new Node(line, "Number", nodes, Node.NodeType.Number);
     }
 

@@ -15,10 +15,12 @@ public class Compiler {
 
     public static String inputFileName = "testfile.txt";
 
-    public static String outputFileName = "error.txt";
+    public static String outputFileName = "output.txt";
 
     public static void main(String[] args) throws Exception {
         clearOutputFile();
+//        lexerTest();
+//        parserTest();
         errorTest();
     }
 
@@ -55,6 +57,7 @@ public class Compiler {
         }
     }
 
+    // below are helper functions
     public static void func1(Node root) throws Exception {
         if (root == null) {
             return ;

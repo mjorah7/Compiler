@@ -87,13 +87,17 @@ public class Lexer {
             } while (Character.isLetter(source.charAt(this.position)) ||
                     Character.isDigit(source.charAt(this.position)) ||
                     source.charAt(this.position) == '_');
-            type = Token.KeyWord.getOrDefault(curString.toString(), TokenType.IDENFR);
+            type = Token.KeyWord.getOrDefault(curString.toString(), TokenType.IDENFR);  // for IDENFR and keywords
         } else if (Character.isDigit(source.charAt(this.position))) {
+            boolean isHex = false;
             do {
+                if (!Character.isDigit(source.charAt(this.position))) {
+                    isHex = true;
+                }
                 curString.append(source.charAt(this.position));
                 this.position ++;
-            } while (Character.isDigit(source.charAt(this.position)));
-            type = TokenType.INTCON;
+            } while (Character.isDigit(source.charAt(this.position)) || source.charAt(this.position) == 'x'  || source.charAt(this.position) == 'X' || (source.charAt(this.position) >= 'a' && source.charAt(this.position) <= 'f') || (source.charAt(this.position) >= 'A' && source.charAt(this.position) <= 'F'));
+            type = isHex ? TokenType.HEXCON : TokenType.INTCON;
         } else if (source.charAt(this.position) == '"') {
             do {
                 curString.append(source.charAt(this.position));

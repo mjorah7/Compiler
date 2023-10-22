@@ -9,7 +9,8 @@ public class Token {
         IDENFR, INTCON, STRCON, MAINTK, CONSTTK, INTTK, BREAKTK, CONTINUETK, IFTK, ELSETK,
         NOT, AND, OR, FORTK, GETINTTK, PRINTFTK, RETURNTK, PLUS, MINU, VOIDTK,
         MULT, DIV, MOD, LSS, LEQ, GRE, GEQ, EQL, NEQ,
-        ASSIGN, SEMICN, COMMA, LPARENT, RPARENT, LBRACK, RBRACK, LBRACE, RBRACE
+        ASSIGN, SEMICN, COMMA, LPARENT, RPARENT, LBRACK, RBRACK, LBRACE, RBRACE,
+        REPEATTK, UNTILTK, HEXCON,
     }
 
     public static Map<String, TokenType> KeyWord = new HashMap<>() {
@@ -26,6 +27,8 @@ public class Token {
             put("printf", TokenType.PRINTFTK);
             put("return", TokenType.RETURNTK);
             put("for", TokenType.FORTK);
+            put("repeat", TokenType.REPEATTK);
+            put("until", TokenType.UNTILTK);
         }
     };
 
