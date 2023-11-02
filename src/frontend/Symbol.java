@@ -30,4 +30,5 @@ public class Symbol {
         this.isConst = isConst;
         this.paramsType = paramsType;
     }
+
 }

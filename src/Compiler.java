@@ -15,7 +15,7 @@ public class Compiler {
 
     public static String inputFileName = "testfile.txt";
 
-    public static String outputFileName = "output.txt";
+    public static String outputFileName = "error.txt";
 
     public static void main(String[] args) throws Exception {
         clearOutputFile();

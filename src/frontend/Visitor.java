@@ -214,6 +214,8 @@ public class Visitor {
         }
     }
 
+    private boolean justAfterFuncDeclare = false;
+
     private void checkFuncDefError (Node node) {
         // FuncDef → FuncType Ident '(' [FuncFParams] ')' Block // b g j
         List<Node> FuncTypeNodes = getSubNodesByType(node, Node.NodeType.FuncType);
@@ -244,11 +246,12 @@ public class Visitor {
         for (Node FuncFParams : FuncFParamsNodes) {
             checkFuncFParamsError(FuncFParams);
         }
+        justAfterFuncDeclare = true;
         for (Node Block : BlockNodes) {
             checkBlockError(Block);
         }
 
-        returnToLastSymbolTable();
+//        returnToLastSymbolTable();
 
         this.isInFunc = false;
         this.isIntFunc = false;
@@ -317,7 +320,11 @@ public class Visitor {
 
         // create a new symbol table for block, mind the exception for func
         level ++;
-        createSubSymbolTable();
+        if (!justAfterFuncDeclare) {
+            createSubSymbolTable();
+        }
+
+        justAfterFuncDeclare = false;
 
         for (Node BlockItem : BlockItemNodes) {
             checkBlockItemError(BlockItem);
