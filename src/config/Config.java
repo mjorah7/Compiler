@@ -1,2 +1,7 @@
-package config;public class Config {
+package config;
+
+public class Config {
+
+    public static final boolean LLVM = true;
+
 }

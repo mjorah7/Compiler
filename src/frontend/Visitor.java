@@ -1,5 +1,7 @@
 package frontend;
 
+import mid.IrGenerator;
+
 import java.util.*;
 import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
@@ -36,8 +38,20 @@ public class Visitor {
 
     public List<Error> entry (Node rootNode) {
         this.rootNode = rootNode;
+
+        IrGenerator.refactorLoop(rootNode);
+        while (!IrGenerator.branchReducedOr) {
+            IrGenerator.branchReducedOr = true;
+            IrGenerator.refactorBranchOr(rootNode);
+        }
+        while (!IrGenerator.branchReducedAnd) {
+            IrGenerator.branchReducedAnd = true;
+            IrGenerator.refactorBranchAnd(rootNode);
+        }
+
         checkCompUnitError(this.rootNode);
         removeDuplicate();
+        rootNode.setSymbolTable(rootSymbolTable);
         return errors;
     }
 
@@ -64,6 +78,10 @@ public class Visitor {
         curSymbolTable = curSymbolTable.father;
     }
 
+    private void setNodeSymbolTable (Node node) {
+        node.setSymbolTable(this.curSymbolTable);
+    }
+
     private void checkCompUnitError (Node node) {
         // CompUnit → {Decl} {FuncDef} MainFuncDef
         List<Node> DeclNodes = getSubNodesByType(node, Node.NodeType.Decl);
@@ -78,6 +96,8 @@ public class Visitor {
         for (Node MainFuncDef : MainFuncDefNodes) {
             checkMainFuncDefError(MainFuncDef);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkDeclError (Node node) {
@@ -90,6 +110,8 @@ public class Visitor {
         for (Node VarDecl : VarDeclNodes) {
             checkVarDeclError(VarDecl);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkConstDeclError (Node node) {
@@ -102,11 +124,14 @@ public class Visitor {
         for (Node ConstDef : ConstDefNodes) {
             checkConstDefError(ConstDef);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkBTypeError (Node node) {
         // BType → 'int'
 
+        setNodeSymbolTable(node);
     }
 
     private void checkConstDefError (Node node) {
@@ -134,12 +159,15 @@ public class Visitor {
                 varType,
                 Symbol.ValueType.INT,
                 true,
-                null
+                null,
+                level
         ));
 
         for (Node ConstInitVal : ConstInitValNodes) {
             checkConstInitValError(ConstInitVal);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkConstInitValError (Node node) {
@@ -155,6 +183,8 @@ public class Visitor {
                 checkConstExpError(ConstExp);
             }
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkVarDeclError (Node node) {
@@ -167,6 +197,8 @@ public class Visitor {
         for (Node VarDef : VarDefNodes) {
             checkVarDefError(VarDef);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkVarDefError (Node node) {
@@ -194,12 +226,17 @@ public class Visitor {
                 varType,
                 Symbol.ValueType.INT,
                 false,
-                null
+                null,
+                level
         ));
 
         for (Node InitVal : InitValNodes) {
             checkInitValError(InitVal);
         }
+
+        setNodeSymbolTable(IdentNodes.get(0));
+
+        setNodeSymbolTable(node);
     }
 
     private void checkInitValError (Node node) {
@@ -212,6 +249,8 @@ public class Visitor {
         for (Node InitVal : InitValNodes) {
             checkInitValError(InitVal);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private boolean justAfterFuncDeclare = false;
@@ -235,8 +274,11 @@ public class Visitor {
                 Symbol.VarType.FUNC,
                 Objects.equals(FuncTypeNodes.get(0).nodeList.get(0).name, "int") ? Symbol.ValueType.INT : Symbol.ValueType.VOID,
                 false,
-                FuncFParamsNodes.size() > 0 ? FuncFParamsToList(FuncFParamsNodes.get(0)) : null
+                FuncFParamsNodes.size() > 0 ? FuncFParamsToList(FuncFParamsNodes.get(0)) : null,
+                level
         ));
+
+        setNodeSymbolTable(node);
 
         // create a new symbol table for func
         createSubSymbolTable();
@@ -262,7 +304,18 @@ public class Visitor {
         List<Node> BlockNodes = getSubNodesByType(node, Node.NodeType.Block);
         this.isInFunc = true;
         this.isIntFunc = true;
+
+        curSymbolTable.addSymbol("main", new Symbol(
+                "main",
+                Symbol.VarType.FUNC,
+                Symbol.ValueType.VOID,
+                false,
+                null,
+                level
+        ));
+        setNodeSymbolTable(node);
         createSubSymbolTable();
+
         for (Node Block : BlockNodes) {
             checkBlockError(Block);
         }
@@ -273,6 +326,7 @@ public class Visitor {
     private void checkFuncTypeError (Node node) {
         // FuncType → 'void' | 'int'
 
+        setNodeSymbolTable(node);
     }
 
     private void checkFuncFParamsError (Node node) {
@@ -281,6 +335,8 @@ public class Visitor {
         for (Node FuncFParam : FuncFParamNodes) {
             checkFuncFParamError(FuncFParam);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkFuncFParamError (Node node) {
@@ -310,13 +366,18 @@ public class Visitor {
                 varType,
                 Symbol.ValueType.INT,
                 false,
-                null
+                null,
+                level
         ));
+
+        setNodeSymbolTable(node);
     }
 
     private void checkBlockError (Node node) {
         // Block → '{' { BlockItem } '}'
         List<Node> BlockItemNodes = getSubNodesByType(node, Node.NodeType.BlockItem);
+
+        setNodeSymbolTable(node);
 
         // create a new symbol table for block, mind the exception for func
         level ++;
@@ -357,6 +418,8 @@ public class Visitor {
         for (Node Stmt : StmtNodes) {
             checkStmtError(Stmt);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkStmtError (Node node) {
@@ -448,6 +511,8 @@ public class Visitor {
                 checkBlockError(Block);
             }
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkForStmtError (Node node) {
@@ -466,6 +531,8 @@ public class Visitor {
         for (Node Exp : ExpNodes) {
             checkExpError(Exp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkExpError (Node node) {
@@ -474,6 +541,8 @@ public class Visitor {
         for (Node AddExp : AddExpNodes) {
             checkAddExpError(AddExp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkCondError (Node node) {
@@ -482,6 +551,8 @@ public class Visitor {
         for (Node LOrExp : LOrExpNodes) {
             checkLOrExpError(LOrExp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkLValError (Node node) {
@@ -494,6 +565,8 @@ public class Visitor {
         for (Node Exp : ExpNodes) {
             checkExpError(Exp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkPrimaryExpError (Node node) {
@@ -510,11 +583,14 @@ public class Visitor {
         for (Node Number : NumberNodes) {
             checkNumberError(Number);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkNumberError (Node node) {
         // Number → IntConst
 
+        setNodeSymbolTable(node);
     }
 
     private void checkUnaryExpError (Node node) {
@@ -555,11 +631,17 @@ public class Visitor {
         for (Node UnaryExp : UnaryExpNodes) {
             checkUnaryExpError(UnaryExp);
         }
+        for (Node FuncRParams : FuncRParamsNodes) {
+            checkFuncRParamsError(FuncRParams);
+        }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkUnaryOpError (Node node) {
         //  UnaryOp → '+' | '−' | '!'
 
+        setNodeSymbolTable(node);
     }
 
     private void checkFuncRParamsError (Node node) {
@@ -568,6 +650,8 @@ public class Visitor {
         for (Node Exp : ExpNodes) {
             checkExpError(Exp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkMulExpError (Node node) {
@@ -580,6 +664,8 @@ public class Visitor {
         for (Node MulExp : MulExpNodes) {
             checkMulExpError(MulExp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkAddExpError (Node node) {
@@ -592,6 +678,8 @@ public class Visitor {
         for (Node AddExp : AddExpNodes) {
             checkAddExpError(AddExp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkRelExpError (Node node) {
@@ -604,6 +692,8 @@ public class Visitor {
         for (Node RelExp : RelExpNodes) {
             checkRelExpError(RelExp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkEqExpError (Node node) {
@@ -616,6 +706,8 @@ public class Visitor {
         for (Node EqExp : EqExpNodes) {
             checkEqExpError(EqExp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkLAndExpError (Node node) {
@@ -628,6 +720,8 @@ public class Visitor {
         for (Node LAndExp : LAndExpNodes) {
             checkLAndExpError(LAndExp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkLOrExpError (Node node) {
@@ -640,6 +734,8 @@ public class Visitor {
         for (Node LOrExp : LOrExpNodes) {
             checkLOrExpError(LOrExp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkConstExpError (Node node) {
@@ -648,11 +744,14 @@ public class Visitor {
         for (Node AddExp : AddExpNodes) {
             checkAddExpError(AddExp);
         }
+
+        setNodeSymbolTable(node);
     }
 
     private void checkFormatStringError (Node node) {
         // <FormatString> → '"'{<Char>}'"' // a
 
+        setNodeSymbolTable(node);
     }
 
     // below are helper func
@@ -707,11 +806,16 @@ public class Visitor {
                 ret.add(Symbol.VarType.ERROR);
             }
         }
+
+        setNodeSymbolTable(FuncRParamsNode);
+
         return ret;
     }
 
     private Symbol.VarType getExpVarType (Node Exp) throws Exception {
         // Exp → AddExp
+        setNodeSymbolTable(Exp);
+
         return getAddExpVarType(Exp.nodeList.get(0));
     }
 
@@ -729,6 +833,9 @@ public class Visitor {
         if (new HashSet<>(types).size() > 1) {
             throw new Exception();
         }
+
+        setNodeSymbolTable(AddExp);
+
         return types.get(0);
     }
 
@@ -746,6 +853,9 @@ public class Visitor {
         if (new HashSet<>(types).size() > 1) {
             throw new Exception();
         }
+
+        setNodeSymbolTable(MulExp);
+
         return types.get(0);
     }
 
@@ -761,6 +871,9 @@ public class Visitor {
         if (UnaryExp.nodeList.get(0).type == Node.NodeType.UnaryOp) {
             return getUnaryExpVarType(UnaryExp.nodeList.get(1));
         }
+
+        setNodeSymbolTable(UnaryExp);
+
         return Symbol.VarType.DEBUG;
     }
 
@@ -775,6 +888,9 @@ public class Visitor {
         if (PrimaryExp.nodeList.get(0).type == Node.NodeType.Number) {
             return Symbol.VarType.VAR;
         }
+
+        setNodeSymbolTable(PrimaryExp);
+
         return Symbol.VarType.DEBUG;
     }
 
@@ -794,6 +910,9 @@ public class Visitor {
                 type = Symbol.VarType.VAR;
             }
         }
+
+        setNodeSymbolTable(LVal);
+
         return type;
     }
 

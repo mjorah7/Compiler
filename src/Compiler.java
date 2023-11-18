@@ -1,5 +1,7 @@
 import frontend.*;
 import frontend.Error;
+import mid.IrGenerator;
+import mid.IrModule;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -15,13 +17,28 @@ public class Compiler {
 
     public static String inputFileName = "testfile.txt";
 
-    public static String outputFileName = "error.txt";
+    public static String outputFileName = "llvm_ir.txt";
 
     public static void main(String[] args) throws Exception {
         clearOutputFile();
 //        lexerTest();
 //        parserTest();
-        errorTest();
+//        errorTest();
+        irTest();
+    }
+
+    public static void irTest() throws Exception {
+        String sourceCode = input();
+        Lexer lexer = new Lexer();
+        List<Token> tokenList = lexer.getTokenList(sourceCode);
+        Tokens tokens = new Tokens(tokenList);
+        Parser parser = new Parser(tokens);
+        Node root = parser.entry();
+        List<Error> errors = Visitor.getInstance().entry(root);
+        assert errors.size() == 0 : "found errors in visitor";
+        IrGenerator irGenerator = new IrGenerator(root, root.getSymbolTable());
+        IrModule irModule = irGenerator.visitCompUnit();
+        output(irModule.toIrString());
     }
 
     public static void errorTest() throws Exception {
@@ -57,6 +74,7 @@ public class Compiler {
         }
     }
 
+    /*----------------------------------------------------------------------------------------------------------------*/
     // below are helper functions
     public static void func1(Node root) throws Exception {
         if (root == null) {

@@ -20,11 +20,28 @@ public class SymbolTable {
         SymbolTable curSymbolTable = this;
         while (curSymbolTable != null) {
             if (curSymbolTable.table.containsKey(symbolName)) {
-                return curSymbolTable.table.get(symbolName);
+                if (Symbol.careDefined) {
+                    if (curSymbolTable.table.get(symbolName).isDefined) {
+                        return curSymbolTable.table.get(symbolName);
+                    }
+                } else {
+                    return curSymbolTable.table.get(symbolName);
+                }
             }
             curSymbolTable = curSymbolTable.father;
         }
         return null;
+    }
+
+    public void setSymbolDefined(String symbolName) {
+        SymbolTable curSymbolTable = this;
+        while(curSymbolTable != null) {
+            if (curSymbolTable.table.containsKey(symbolName)) {
+                Symbol symbol = curSymbolTable.table.get(symbolName);
+                symbol.isDefined = true;
+            }
+            curSymbolTable = curSymbolTable.father;
+        }
     }
 
 }
