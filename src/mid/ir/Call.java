@@ -37,4 +37,16 @@ public class Call extends Instruction {
         return sb.toString();
     }
 
+    public Symbol getFunc() {
+        return func;
+    }
+
+    public List<Operand> getArgs() {
+        return args;
+    }
+
+    public Symbol getRet() {
+        return ret;
+    }
+
 }

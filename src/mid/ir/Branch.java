@@ -32,4 +32,20 @@ public class Branch extends Instruction {
         return table() + "br i1 " + condition.value2Ir() + ", label %" + labelTrue + ", label %" + labelFalse;
     }
 
+    public Operand getCondition() {
+        return condition;
+    }
+
+    public String getLabelTrue() {
+        return labelTrue;
+    }
+
+    public String getLabelFalse() {
+        return labelFalse;
+    }
+
+    public Op getOperator() {
+        return operator;
+    }
+
 }

@@ -17,4 +17,8 @@ public class Return extends Instruction {
         }
     }
 
+    public Operand getReturnValue() {
+        return returnValue;
+    }
+
 }

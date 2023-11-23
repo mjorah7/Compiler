@@ -24,4 +24,8 @@ public class PrintStr extends Instruction {
         return sj.toString();
     }
 
+    public String getString() {
+        return string;
+    }
+
 }

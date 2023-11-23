@@ -39,4 +39,16 @@ public class ElementPtr extends Instruction {
         }
     }
 
+    public Symbol getDst() {
+        return dst;
+    }
+
+    public Symbol getBase() {
+        return base;
+    }
+
+    public List<Operand> getIndex() {
+        return index;
+    }
+
 }

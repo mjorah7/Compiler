@@ -17,4 +17,16 @@ public class Trunc extends Instruction {
         return table() + dst.value2Ir() + " = icmp ne " + type + " " + src.value2Ir() + ", 0";
     }
 
+    public Operand getSrc() {
+        return src;
+    }
+
+    public Operand getDst() {
+        return dst;
+    }
+
+    public String getType() {
+        return type;
+    }
+
 }

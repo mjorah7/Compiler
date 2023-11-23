@@ -51,4 +51,16 @@ public class PointerOp extends Instruction {
         }
     }
 
+    public Op getOperator() {
+        return operator;
+    }
+
+    public Operand getSrc() {
+        return src;
+    }
+
+    public Symbol getDst() {
+        return dst;
+    }
+
 }

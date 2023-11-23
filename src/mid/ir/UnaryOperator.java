@@ -57,4 +57,16 @@ public class UnaryOperator extends Instruction {
         return this.operator == Op.NOT;
     }
 
+    public Op getOperator() {
+        return operator;
+    }
+
+    public Symbol getRes() {
+        return res;
+    }
+
+    public Operand getRight() {
+        return right;
+    }
+
 }

@@ -52,4 +52,12 @@ public class IrModule {
         this.funcDefs.add(funcDef);
     }
 
+    public List<Symbol> getVarDefs() {
+        return varDefs;
+    }
+
+    public List<FuncDef> getFuncDefs() {
+        return funcDefs;
+    }
+
 }

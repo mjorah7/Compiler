@@ -46,6 +46,22 @@ public class BinaryOperator extends Instruction {
         }
     };
 
+    public static final Map<Op, String> op2mips = new HashMap<>() {
+        {
+            put(Op.ADD, "addu");
+            put(Op.SUB, "subu");
+            put(Op.MULT, "mul");
+            put(Op.DIV, "div");
+            put(Op.MOD, "rem");
+            put(Op.EQL, "seq");
+            put(Op.NEQ, "sne");
+            put(Op.GRE, "sgt");
+            put(Op.GEQ, "sge");
+            put(Op.LEQ, "sle");
+            put(Op.LSS, "slt");
+        }
+    };
+
     private final Operand left;
     private final Operand right;
     private final Op operator;
@@ -76,6 +92,22 @@ public class BinaryOperator extends Instruction {
         // EQL, GEQ, GRE, LEQ, LSS, NEQ
         return this.operator == Op.EQL || this.operator == Op.GEQ || this.operator == Op.GRE ||
                 this.operator == Op.LEQ || this.operator == Op.LSS || this.operator == Op.NEQ;
+    }
+
+    public Operand getLeft() {
+        return left;
+    }
+
+    public Operand getRight() {
+        return right;
+    }
+
+    public Op getOperator() {
+        return operator;
+    }
+
+    public Symbol getRes() {
+        return res;
     }
 
 }

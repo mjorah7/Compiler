@@ -1,5 +1,6 @@
 package frontend;
 
+import backend.MipsGenerator;
 import mid.ir.Number;
 import mid.ir.Operand;
 import mid.IrGenerator.*;
@@ -98,7 +99,7 @@ public class Symbol implements Operand {
         if (!isGlobal) {
             return "%" + symbolName + "_" + level + "_" + globalCount;
         } else {
-            return "@" + symbolName;
+            return (MipsGenerator.withAt ? "@" : "") + symbolName;
         }
     }
 
@@ -237,6 +238,19 @@ public class Symbol implements Operand {
 
     public boolean isPointer() {
         return this.symbolVarType == VarType.POINTER;
+    }
+
+    public int getCapacity() {
+        assert this.isArray() : "error in getCapacity";
+        if (this.isArray1()) {
+            return dimensions.get(0) * 4;
+        } else {
+            return dimensions.get(0) * dimensions.get(1) * 4;
+        }
+    }
+
+    public boolean isTmp() {
+        return this.symbolName.startsWith("%-t");
     }
 
 }

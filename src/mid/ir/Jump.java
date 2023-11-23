@@ -14,4 +14,8 @@ public class Jump extends Instruction {
         return table() + "br label %" + label;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
 }

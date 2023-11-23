@@ -64,7 +64,7 @@ public class Calculator {
     private static int calLval(Node node) {
         // LVal → Ident {'[' Exp ']'}
         Symbol symbol = node.getSymbolTable().getVisableSymbol(node.getSubNodesByType(Node.NodeType.IDENFR).get(0).name);
-        assert symbol.isGlobal : "error in calLVal, symbol is not global";
+        assert symbol.isGlobal || symbol.isConst : "error in calLVal, symbol is not global ot const";
         if (symbol.isVar()) {
             return symbol.globalValue;
         }

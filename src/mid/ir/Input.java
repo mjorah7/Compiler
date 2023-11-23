@@ -16,4 +16,8 @@ public class Input extends Instruction {
         return table() + dst.value2Ir() + " = call i32 @getint()";
     }
 
+    public Symbol getDst() {
+        return dst;
+    }
+
 }

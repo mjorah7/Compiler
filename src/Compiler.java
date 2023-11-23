@@ -1,3 +1,5 @@
+import backend.MipsGenerator;
+import config.Config;
 import frontend.*;
 import frontend.Error;
 import mid.IrGenerator;
@@ -17,14 +19,46 @@ public class Compiler {
 
     public static String inputFileName = "testfile.txt";
 
-    public static String outputFileName = "llvm_ir.txt";
+    public static String outputFileName = "mips.txt";
 
     public static void main(String[] args) throws Exception {
         clearOutputFile();
 //        lexerTest();
 //        parserTest();
 //        errorTest();
-        irTest();
+//        irTest();
+        mipsTest();
+    }
+
+    public static void mipsTest() throws Exception {
+        String sourceCode = input();
+        Lexer lexer = new Lexer();
+        List<Token> tokenList = lexer.getTokenList(sourceCode);
+        Tokens tokens = new Tokens(tokenList);
+        Parser parser = new Parser(tokens);
+        Node root = parser.entry();
+        List<Error> errors = Visitor.getInstance().entry(root);
+        if (Config.DEBUG) {
+            if (errors.size() != 0) {
+                for (Error e : errors) {
+                    System.out.println(e.line + " " + e.errorType);
+                }
+            }
+        }
+        if (errors.size() != 0) {
+            outputFileName = "error.txt";
+            for (Error error : errors) {
+                output(error.line + " " + error.errorType.toString());
+            }
+            return ;
+        }
+        IrGenerator irGenerator = new IrGenerator(root, root.getSymbolTable());
+        IrModule irModule = irGenerator.visitCompUnit();
+        if (Config.DEBUG) {
+            System.out.println(irModule.toIrString());
+        }
+        MipsGenerator mipsGenerator = new MipsGenerator(irModule);
+        output(mipsGenerator.generateMips());
     }
 
     public static void irTest() throws Exception {

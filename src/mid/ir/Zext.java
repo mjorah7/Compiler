@@ -15,4 +15,12 @@ public class Zext extends Instruction {
         return table() + dst.value2Ir() + " = zext i1 " + src.value2Ir() + " to i32";
     }
 
+    public Operand getSrc() {
+        return src;
+    }
+
+    public Operand getDst() {
+        return dst;
+    }
+
 }

@@ -38,6 +38,14 @@ public class BasicBlock extends Instruction {
         return this.endInstruction.getPrevInstruction();
     }
 
+    public Instruction getFirstInstruction() {
+        return this.getNextInstruction();
+    }
+
+    public Instruction getEndInstruction() {
+        return this.endInstruction;
+    }
+
     public void addToFront(Instruction instruction) {
         Instruction pre = this.getNextInstruction();
         this.setNextInstruction(instruction);

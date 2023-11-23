@@ -16,4 +16,8 @@ public class PrintInt extends Instruction {
         return table() + "call void @putint(" + ((operand instanceof Number) ? "i32" : Symbol.type2Ir.get(((Symbol) operand).symbolValueType)) + " " + operand.value2Ir() + ")";
     }
 
+    public Operand getOperand() {
+        return operand;
+    }
+
 }

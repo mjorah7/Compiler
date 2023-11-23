@@ -186,6 +186,9 @@ public class IrGenerator {
             VarDef varDef = new VarDef(symbol);
             curBasicBlock.addToChain(varDef);
             if (symbol.symbolVarType == Symbol.VarType.VAR && node.subNodesContain(Node.NodeType.ASSIGN)) {
+                if (symbol.isConst) {
+                    symbol.globalValue = Calculator.calConstExp(node.getSubNodesByType(Node.NodeType.ConstInitVal).get(0).nodeList.get(0));
+                }
                 Operand init = visitConstExp(node.getSubNodesByType(Node.NodeType.ConstInitVal).get(0).nodeList.get(0));
                 symbol.initValue = init;
                 curBasicBlock.addToChain(new PointerOp(PointerOp.Op.STORE, symbol, init));
