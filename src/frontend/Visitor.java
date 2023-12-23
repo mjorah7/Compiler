@@ -52,6 +52,8 @@ public class Visitor {
         checkCompUnitError(this.rootNode);
         removeDuplicate();
         rootNode.setSymbolTable(rootSymbolTable);
+
+        Collections.sort(errors);
         return errors;
     }
 
